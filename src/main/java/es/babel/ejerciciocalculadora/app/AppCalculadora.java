@@ -1,18 +1,21 @@
 package es.babel.ejerciciocalculadora.app;
 
 import es.babel.ejerciciocalculadora.service.ICalculadoraService;
+import es.babel.ejerciciocalculadora.service.IMostrarResultadoService;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
 public class AppCalculadora {
-    final
-    ICalculadoraService calculadoraService;
+    private final ICalculadoraService calculadoraService;
+    private final IMostrarResultadoService mostrarResultadoService;
 
-    public AppCalculadora(ICalculadoraService calculadoraService) {
+    public AppCalculadora(ICalculadoraService calculadoraService, IMostrarResultadoService mostrarResultadoService) {
         this.calculadoraService = calculadoraService;
+        this.mostrarResultadoService = mostrarResultadoService;
     }
+
 
     public String mostrarMenu(){
        return "Bienvenido a la calculadora, selecciona una operación: \n1. Sumar\n2. Restar\n3. Multiplicar \n4. Dividir \n5. Salir";
@@ -28,54 +31,32 @@ public class AppCalculadora {
         do {
             System.out.println(mostrarMenu());
 
+            continuar = switchOpcion(sc, continuar);
+
+        } while(continuar);
+    }
+
+    private boolean switchOpcion(Scanner sc, boolean continuar) {
+        int numero2;
+        int numero1;
+        try {
             int opcionEscogida = sc.nextInt();
 
             switch (opcionEscogida) {
                 case 1:
-                    try {
-                        System.out.println("Introduzca primer número");
-                        numero1 = sc.nextInt();
-                        System.out.println("Introduzca segundo número");
-                        numero2 = sc.nextInt();
-                        System.out.println(calculadoraService.sumar(numero1, numero2));
-                    } catch (Exception e){
-                        System.out.println("ERROR. Introduzca valor numérico");
-                    }
+                    mostrarResultadoService.mostrarSuma(sc);
                     break;
 
                 case 2:
-                    try {
-                        System.out.println("Introduzca primer número");
-                        numero1 = sc.nextInt();
-                        System.out.println("Introduzca número que desea restarle");
-                        numero2 = sc.nextInt();
-                        System.out.println(calculadoraService.restar(numero1, numero2));
-                    } catch (Exception e){
-                        System.out.println("ERROR. Introduzca valor numérico");
-                    }
+                    mostrarResultadoService.mostrarResta(sc);
                     break;
 
                 case 3:
-                    try {
-                        System.out.println("Introduzca primer número");
-                        numero1 = sc.nextInt();
-                        System.out.println("Introduzca segundo número");
-                        numero2 = sc.nextInt();
-                        System.out.println(calculadoraService.multiplicar(numero1, numero2));
-                    } catch (Exception e){
-                        System.out.println("ERROR. Introduzca valor numérico");
-                    }
+                   mostrarResultadoService.mostrarMultiplicacion(sc);
                     break;
 
-                case 4: try {
-                    System.out.println("Introduzca dividendo");
-                    numero1 = sc.nextInt();
-                    System.out.println("Introduzca divisor");
-                    numero2 = sc.nextInt();
-                    System.out.println(calculadoraService.dividir(numero1, numero2));
-                } catch (Exception e){
-                    System.out.println("ERROR. Introduzca valor numérico");
-                }
+                case 4:
+                    mostrarResultadoService.mostrarDivision(sc);
                     break;
 
                 case 5:
@@ -86,9 +67,10 @@ public class AppCalculadora {
                 default:
                     System.out.println("Opción incorrecta");
             }
-
-        } while(continuar);
-
-
+        } catch (Exception e) {
+            System.out.println("Opción incorrecta");
+            sc.nextLine();
+        }
+        return continuar;
     }
 }
