@@ -1,69 +1,57 @@
 package es.babel.ejerciciocalculadora.app;
 
-import es.babel.ejerciciocalculadora.service.ICalculadoraService;
-import es.babel.ejerciciocalculadora.service.IMostrarResultadoService;
+import es.babel.ejerciciocalculadora.service.IMostrarService;
+import es.babel.ejerciciocalculadora.service.InputUsuarioService;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
 public class AppCalculadora {
-    private final IMostrarResultadoService mostrarResultadoService;
+    private final IMostrarService mostrarService;
+    private final InputUsuarioService inputUsuarioService;
 
-    public AppCalculadora(IMostrarResultadoService mostrarResultadoService) {
-        this.mostrarResultadoService = mostrarResultadoService;
+    public AppCalculadora(IMostrarService mostrarService, InputUsuarioService inputUsuarioService) {
+        this.mostrarService = mostrarService;
+        this.inputUsuarioService = inputUsuarioService;
     }
-
-
-    public String mostrarMenu(){
-       return "Bienvenido a la calculadora, selecciona una operación: \n1. Sumar\n2. Restar\n3. Multiplicar \n4. Dividir \n5. Salir";
-    }
-
 
     public void run() {
         Scanner sc = new Scanner(System.in);
         boolean continuar = true;
 
         do {
-            System.out.println(mostrarMenu());
+            mostrarService.mostrarMenu();
+            try {
+                int operacionEscogida = inputUsuarioService.operacionEscogida(sc);
+                switch (operacionEscogida) {
+                    case 1:
+                        mostrarService.mostrarSuma(sc);
+                        break;
+                    case 2:
+                        mostrarService.mostrarResta(sc);
+                        break;
 
-            continuar = switchOpcion(sc, continuar);
+                    case 3:
+                        mostrarService.mostrarMultiplicacion(sc);
+                        break;
 
-        } while(continuar);
-    }
+                    case 4:
+                        mostrarService.mostrarDivision(sc);
+                        break;
 
-    private boolean switchOpcion(Scanner sc, boolean continuar) {
-        try {
-            int opcionEscogida = sc.nextInt();
+                    case 5:
+                        continuar = false;
+                        mostrarService.mostrarDespedida();
+                        break;
 
-            switch (opcionEscogida) {
-                case 1:
-                    mostrarResultadoService.mostrarSuma(sc);
-                    break;
-                case 2:
-                    mostrarResultadoService.mostrarResta(sc);
-                    break;
-
-                case 3:
-                   mostrarResultadoService.mostrarMultiplicacion(sc);
-                    break;
-
-                case 4:
-                    mostrarResultadoService.mostrarDivision(sc);
-                    break;
-
-                case 5:
-                    continuar = false;
-                    System.out.println("Hasta luego!");
-                    break;
-
-                default:
-                    System.out.println("Opción incorrecta");
+                    default:
+                        mostrarService.mostrarError();
+                }
+            } catch (Exception e) {
+                mostrarService.mostrarError();
+                sc.nextLine();
             }
-        } catch (Exception e) {
-            System.out.println("Opción incorrecta");
-            sc.nextLine();
-        }
-        return continuar;
+        } while(continuar);
     }
 }
