@@ -8,11 +8,9 @@ import java.util.Scanner;
 
 @Component
 public class AppCalculadora {
-    private final ICalculadoraService calculadoraService;
     private final IMostrarResultadoService mostrarResultadoService;
 
-    public AppCalculadora(ICalculadoraService calculadoraService, IMostrarResultadoService mostrarResultadoService) {
-        this.calculadoraService = calculadoraService;
+    public AppCalculadora(IMostrarResultadoService mostrarResultadoService) {
         this.mostrarResultadoService = mostrarResultadoService;
     }
 
@@ -24,8 +22,6 @@ public class AppCalculadora {
 
     public void run() {
         Scanner sc = new Scanner(System.in);
-        int numero1;
-        int numero2;
         boolean continuar = true;
 
         do {
@@ -46,7 +42,6 @@ public class AppCalculadora {
                 case 1:
                     mostrarResultadoService.mostrarSuma(sc);
                     break;
-
                 case 2:
                     mostrarResultadoService.mostrarResta(sc);
                     break;
