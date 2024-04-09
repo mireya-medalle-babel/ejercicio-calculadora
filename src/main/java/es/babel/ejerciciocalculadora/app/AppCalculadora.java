@@ -33,8 +33,6 @@ public class AppCalculadora {
     }
 
     private boolean switchOpcion(Scanner sc, boolean continuar) {
-        int numero2;
-        int numero1;
         try {
             int opcionEscogida = sc.nextInt();
 
